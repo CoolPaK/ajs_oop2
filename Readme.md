@@ -1,6 +1,6 @@
 ## AJS_ooP2
 
-
+[![Build status](https://ci.appveyor.com/api/projects/status/pkkc1m33tudp8o55?svg=true)](https://ci.appveyor.com/project/CoolPaK/ajs-oop2)
 
 ---
 
