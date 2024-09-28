@@ -2,7 +2,9 @@ import Character from './Character';
 
 class Zombie extends Character {
     constructor(name) {
-        super(name, 'Zombie');
+        const attack = 40;
+        const defence = 10;
+        super(name, 'Zombie', attack, defence);
     }
 }
 

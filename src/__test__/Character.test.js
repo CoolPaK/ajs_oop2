@@ -1,5 +1,5 @@
 import Character from '../js/Character';
-import Bowman from '../js/Bowerman';
+import Bowerman from '../js/Bowerman';
 import Swordsman from '../js/Swordsman';
 import Magician from '../js/Magician';
 import Daemon from '../js/Daemon';
@@ -8,9 +8,9 @@ import Zombie from '../js/Zombie';
 
 describe('Character', () => {
 
-    // Test for successful creation of Character instance
-    it('should create a Character instance with valid parameters', () => {
-        const character = new Character('Test', 'Bowman');
+    // Тест на успешное создание экземпляра Character
+    it('должен создать экземпляр Character с корректными параметрами', () => {
+        const character = new Character('Test', 'Bowman', 25, 25);
         expect(character.name).toBe('Test');
         expect(character.type).toBe('Bowman');
         expect(character.health).toBe(100);
@@ -19,24 +19,24 @@ describe('Character', () => {
         expect(character.defence).toBe(25);
     });
 
-    // Test for error when name is too short
-    it('should throw an error for invalid name (less than 2 characters)', () => {
-        expect(() => new Character('A', 'Bowman')).toThrowError('name должен быть строкой от 2 до 10 символов');
+    // Тест на ошибку при слишком коротком имени
+    it('должен выбросить ошибку за недопустимое имя (менее 2 символов)', () => {
+        expect(() => new Character('A', 'Bowman', 25, 25)).toThrow('name должен быть строкой от 2 до 10 символов');
     });
 
-    // Test for error when name is too long
-    it('should throw an error for invalid name (more than 10 characters)', () => {
-        expect(() => new Character('VeryLongCharacterName', 'Bowman')).toThrowError('name должен быть строкой от 2 до 10 символов');
+    // Тест на ошибку при слишком длинном имени
+    it('должен выбросить ошибку за недопустимое имя (более 10 символов)', () => {
+        expect(() => new Character('VeryLongCharacterName', 'Bowman', 25, 25)).toThrow('name должен быть строкой от 2 до 10 символов');
     });
 
-    // Test for error when type is invalid
-    it('should throw an error for invalid type', () => {
-        expect(() => new Character('Test', 'InvalidType')).toThrowError('Недопустимый тип');
+    // Тест на ошибку при недопустимом типе
+    it('должен выбросить ошибку за недопустимый тип', () => {
+        expect(() => new Character('Test', 'InvalidType', 25, 25)).toThrow('Недопустимый тип');
     });
 
-    // Test for successful level up
-    it('should level up a character correctly', () => {
-        const character = new Character('Test', 'Bowman');
+    // Тест на успешное повышение уровня
+    it('должен правильно повысить уровень персонажа', () => {
+        const character = new Character('Test', 'Bowman', 25, 25);
         character.levelUp();
         expect(character.level).toBe(2);
         expect(character.attack).toBeCloseTo(30); // 25 * 1.2
@@ -44,58 +44,61 @@ describe('Character', () => {
         expect(character.health).toBe(100);
     });
 
-    // Test for error when leveling up a dead character
-    it('should throw an error when leveling up a dead character', () => {
-        const character = new Character('Test', 'Bowman');
+    // Тест на ошибку при попытке повысить уровень мертвого персонажа
+    it('должен выбросить ошибку при повышении уровня мертвого персонажа', () => {
+        const character = new Character('Test', 'Bowman', 25, 25);
         character.health = 0;
-        expect(() => character.levelUp()).toThrowError('Cannot level up a dead character');
+        expect(() => character.levelUp()).toThrow('Невозможно повысить уровень мертвого персонажа');
     });
 
-    // Test for correct damage calculation
-    it('should calculate damage correctly', () => {
-        const character = new Character('Test', 'Bowman');
+    // Тест на правильный расчет урона
+    it('должен правильно рассчитать урон', () => {
+        const character = new Character('Test', 'Bowman', 25, 25);
         character.damage(20);
         expect(character.health).toBe(85); // 100 - (20 * (1 - 25 / 100))
     });
 
-    // Test to prevent health from going below 0
-    it('should not allow health to go below 0', () => {
-        const character = new Character('Test', 'Bowman');
-        character.damage(120); // Inflicting damage exceeding current health
-        expect(character.health).toBe(10); // health should not be negative
+    // Тест на предотвращение ухода здоровья ниже 0
+    it('не должен позволять здоровью опуститься ниже 0', () => {
+        const character = new Character('Test', 'Bowman', 25, 25);
+        character.damage(120); // Наносим урон, превышающий текущее здоровье
+        expect(character.health).toBe(10); // Здоровье не должно быть отрицательным
     });
 
-    // Additional tests for edge cases
-    // Test for handling negative damage correctly
-    it('should handle negative damage correctly', () => {
-        const character = new Character('Test', 'Bowman');
-        character.damage(-10); // Apply negative damage
-        expect(character.health).toBe(107.5); // Health should not change
+    // Тест на правильную обработку отрицательного урона
+    it('должен правильно обрабатывать отрицательный урон', () => {
+        const character = new Character('Test', 'Bowman', 25, 25);
+        character.health = 100; // Сбрасываем здоровье для ясности
+        character.damage(-10); // Применяем отрицательный урон
+        expect(character.health).toBe(107.5); // Здоровье должно остаться неизменным
     });
 
-    // Test for handling damage exceeding maximum health
-    it('should handle damage exceeding maximum health correctly', () => {
-        const character = new Character('Test', 'Bowman');
-        character.health = 5; // Set current health
-        character.damage(10); // Damage exceeds health
-        expect(character.health).toBe(0); // Health should not be negative
+    // Тест на обработку урона, превышающего максимальное здоровье
+    it('должен правильно обрабатывать урон, превышающий максимальное здоровье', () => {
+        const character = new Character('Test', 'Bowman', 25, 25);
+        character.health = 5; // Устанавливаем текущее здоровье
+        character.damage(10); // Урон превышает здоровье
+        expect(character.health).toBe(0); // Здоровье не должно быть отрицательным
     });
 
-    // Tests for getAttack and getDefence methods
-    it('should throw an error for invalid type in getAttack', () => {
-        const character = new Character('Test', 'Bowman');
-        expect(() => character.getAttack('InvalidType')).toThrowError('Invalid type');
+    // Тест на получение значения атаки
+    it('должен возвращать корректное значение атаки', () => {
+        const character = new Character('Test', 'Bowman', 25, 25);
+        const attackValue = character.getAttack();
+        expect(attackValue).toBe(25); // Убедимся, что getAttack возвращает ожидаемое значение
     });
 
-    it('should throw an error for invalid type in getDefence', () => {
-        const character = new Character('Test', 'Bowman');
-        expect(() => character.getDefence('InvalidType')).toThrowError('Invalid type');
+    // Тест на получение значения защиты
+    it('должен возвращать корректное значение защиты', () => {
+        const character = new Character('Test', 'Bowman', 25, 25);
+        const defenceValue = character.getDefence();
+        expect(defenceValue).toBe(25); // Убедимся, что getDefence возвращает ожидаемое значение
     });
 });
 
-describe('Bowman', () => {
-    it('should create a Bowman instance with correct attributes', () => {
-        const bowman = new Bowman('Archer');
+describe('Bowerman', () => {
+    it('должен создать экземпляр Bowerman с корректными атрибутами', () => {
+        const bowman = new Bowerman('Archer');
         expect(bowman.name).toBe('Archer');
         expect(bowman.type).toBe('Bowman');
         expect(bowman.health).toBe(100);
@@ -106,7 +109,7 @@ describe('Bowman', () => {
 });
 
 describe('Swordsman', () => {
-    it('should create a Swordsman instance with correct attributes', () => {
+    it('должен создать экземпляр Swordsman с корректными атрибутами', () => {
         const swordsman = new Swordsman('Knight');
         expect(swordsman.name).toBe('Knight');
         expect(swordsman.type).toBe('Swordsman');
@@ -118,7 +121,7 @@ describe('Swordsman', () => {
 });
 
 describe('Magician', () => {
-    it('should create a Magician instance with correct attributes', () => {
+    it('должен создать экземпляр Magician с корректными атрибутами', () => {
         const magician = new Magician('Mage');
         expect(magician.name).toBe('Mage');
         expect(magician.type).toBe('Magician');
@@ -130,7 +133,7 @@ describe('Magician', () => {
 });
 
 describe('Daemon', () => {
-    it('should create a Daemon instance with correct attributes', () => {
+    it('должен создать экземпляр Daemon с корректными атрибутами', () => {
         const daemon = new Daemon('DarkSpirit');
         expect(daemon.name).toBe('DarkSpirit');
         expect(daemon.type).toBe('Daemon');
@@ -142,7 +145,7 @@ describe('Daemon', () => {
 });
 
 describe('Undead', () => {
-    it('should create an Undead instance with correct attributes', () => {
+    it('должен создать экземпляр Undead с корректными атрибутами', () => {
         const undead = new Undead('Zombie');
         expect(undead.name).toBe('Zombie');
         expect(undead.type).toBe('Undead');
@@ -154,7 +157,7 @@ describe('Undead', () => {
 });
 
 describe('Zombie', () => {
-    it('should create a Zombie instance with correct attributes', () => {
+    it('должен создать экземпляр Zombie с корректными атрибутами', () => {
         const zombie = new Zombie('Walker');
         expect(zombie.name).toBe('Walker');
         expect(zombie.type).toBe('Zombie');
